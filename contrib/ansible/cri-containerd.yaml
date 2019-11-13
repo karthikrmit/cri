@@ -37,11 +37,14 @@
 
     - name: "Add runtime args in kubelet conf"
       lineinfile:
-        dest: "/etc/systemd/system/kubelet.service.d/10-kubeadm.conf"
+        dest: "/usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf"
         line: "Environment=\"KUBELET_EXTRA_ARGS= --runtime-cgroups=/system.slice/containerd.service --container-runtime=remote --runtime-request-timeout=15m --container-runtime-endpoint=unix:///run/containerd/containerd.sock\""
         insertafter: '\[Service\]'
       when: check_args.stdout == ""
     
+    - name: "Disable Swap"
+      shell: swapoff -a
+      
     - name: "Start Kubelet"
       systemd: name=kubelet daemon_reload=yes state=started enabled=yes
     

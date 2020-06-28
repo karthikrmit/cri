@@ -13,9 +13,12 @@
     - name: "Create a directory for containerd config"
       file: path=/etc/containerd state=directory
 
+    - name: "Containerd set default toml"
+      shell: mkdir -p /etc/containerd && containerd config default > /etc/containerd/config.toml
+      
     - name: "Start Containerd"
       systemd: name=containerd daemon_reload=yes state=started enabled=yes
-
+    
     - name: "Load br_netfilter kernel module"
       modprobe:
         name: br_netfilter
